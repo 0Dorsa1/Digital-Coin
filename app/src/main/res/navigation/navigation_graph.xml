@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navigation_graph">
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/coinsListFragment">
 
     <fragment
         android:name="com.example.digitalcoin.fragment.CoinsListFragment"
-        android:id="@+id/coins"
+        android:id="@+id/coinsListFragment"
         android:label="coins_list">
 
+
         <action
-            android:id="@+id/action_coins_to_coin"
-            app:destination="@id/coin" />
+            android:id="@+id/action_coinsListFragment_to_coinDetailFragment"
+            app:destination="@id/coinDetailFragment" />
     </fragment>
+
     <fragment
-        android:name="com.example.digitalcoin.fragment.CoinFragment"
-        android:id="@+id/coin"
+        android:name="com.example.digitalcoin.fragment.CoinDetailFragment"
+        android:id="@+id/coinDetailFragment"
         android:label="coin">
+
         <argument
-            android:name="coin_info"
-            app:argType="com.example.digitalcoin.model.DigitalCoin"
-            app:nullable="true" />
+            android:name="id"
+            app:argType="string"/>
 
     </fragment>
 

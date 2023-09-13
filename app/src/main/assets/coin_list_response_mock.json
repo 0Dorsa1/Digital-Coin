@@ -1,0 +1,115 @@
+{
+  "data": [
+    {
+      "date": 1694594167412,
+      "symbol": "BTC",
+      "priceDif1Day": "25,838.06",
+      "price": "25,952.83",
+      "lastUpdate": "",
+      "name": "Bitcoin",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+      "id": "61f3e31f23f1f2048a87d945",
+      "lastPrice": 25952.83
+    },
+    {
+      "date": 1694594167660,
+      "symbol": "ETH",
+      "priceDif1Day": "1,592.86",
+      "price": "1,592.05",
+      "lastUpdate": "",
+      "name": "Ethereum",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+      "id": "61f3e31f23f1f2048a87d921",
+      "lastPrice": 1592.05
+    },
+    {
+      "date": 1694594167305,
+      "symbol": "USDT",
+      "priceDif1Day": "0.9999",
+      "price": "0.9999",
+      "lastUpdate": "",
+      "name": "Tether USDt",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
+      "id": "61f3e31f23f1f2048a87d943",
+      "lastPrice": 0.9999
+    },
+    {
+      "date": 1694594167743,
+      "symbol": "BNB",
+      "priceDif1Day": "211.60",
+      "price": "210.79",
+      "lastUpdate": "",
+      "name": "BNB",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
+      "id": "61f3e31f23f1f2048a87d929",
+      "lastPrice": 210.79
+    },
+    {
+      "date": 1694594167955,
+      "symbol": "USDC",
+      "priceDif1Day": "1.00",
+      "price": "1.00",
+      "lastUpdate": "",
+      "name": "USD Coin",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+      "id": "61f3e31f23f1f2048a87d922",
+      "lastPrice": 1
+    },
+    {
+      "date": 1694594167702,
+      "symbol": "XRP",
+      "priceDif1Day": "0.28",
+      "price": "0.4759",
+      "lastUpdate": "",
+      "name": "XRP",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/52.png",
+      "id": "61f3e31f23f1f2048a87d917",
+      "lastPrice": 0.4759
+    },
+    {
+      "date": 1694594167798,
+      "symbol": "ADA",
+      "priceDif1Day": "0.246",
+      "price": "0.2461",
+      "lastUpdate": "",
+      "name": "Cardano",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png",
+      "id": "61f3e31f23f1f2048a87d915",
+      "lastPrice": 0.2461
+    },
+    {
+      "date": 1694594167544,
+      "symbol": "DOGE",
+      "priceDif1Day": "0.06097",
+      "price": "0.06101",
+      "lastUpdate": "",
+      "name": "Dogecoin",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png",
+      "id": "61f3e31f23f1f2048a87d91b",
+      "lastPrice": 0.06101
+    },
+    {
+      "date": 1694594167816,
+      "symbol": "SOL",
+      "priceDif1Day": "17.95",
+      "price": "18.08",
+      "lastUpdate": "",
+      "name": "Solana",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png",
+      "id": "61f3e31f23f1f2048a87d950",
+      "lastPrice": 18.08
+    },
+    {
+      "date": 1694594167638,
+      "symbol": "TRX",
+      "priceDif1Day": "0.08079",
+      "price": "0.08051",
+      "lastUpdate": "",
+      "name": "TRON",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png",
+      "id": "61f3e31f23f1f2048a87d96c",
+      "lastPrice": 0.08051
+    }
+  ],
+  "status": true
+}

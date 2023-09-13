@@ -4,6 +4,12 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+data class GetCoinDetailResponse(
+    val data: DetailedCoin,
+    val status: Boolean
+) : Parcelable
+
+@Parcelize
 data class DetailedCoin(
     val date: Long,
     val symbol: String,
@@ -24,7 +30,6 @@ data class DetailedCoin(
     val order: Int,
     val lastPrice: Double
 ) : Parcelable
-
 
 @Parcelize
 data class Link(

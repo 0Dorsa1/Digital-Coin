@@ -1,27 +1,25 @@
 package com.example.digitalcoin.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import com.example.digitalcoin.R
 import com.example.digitalcoin.databinding.FragmentEmptyComposeBinding
-import com.example.digitalcoin.ui.CoinUI
-import com.example.digitalcoin.ui.viewmodel.CoinsListViewModel
+import com.example.digitalcoin.ui.CoinDetailScreen
+import dagger.hilt.android.AndroidEntryPoint
 
 
-class CoinFragment : Fragment() {
-    private lateinit var args: CoinFragmentArgs
-    private lateinit var viewModel: CoinsListViewModel
+@AndroidEntryPoint
+class CoinDetailFragment : Fragment() {
+    private lateinit var args: CoinDetailFragmentArgs
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        args = CoinFragmentArgs.fromBundle(requireArguments())
-        viewModel = ViewModelProvider(requireActivity())[CoinsListViewModel::class.java]
+        args = CoinDetailFragmentArgs.fromBundle(requireArguments())
     }
 
     override fun onCreateView(
@@ -34,7 +32,9 @@ class CoinFragment : Fragment() {
         binding.composeContainer.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                CoinUI(viewModel.state)
+                CoinDetailScreen(
+                    id = args.id
+                )
             }
         }
 

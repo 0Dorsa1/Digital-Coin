@@ -25,7 +25,7 @@ class CoinsListViewModel @Inject constructor(private val repository: CoinListRep
                isError = false
            )
 
-           delay(6000)
+           delay(2000)
 
            repository.call(
                pageSize = pageSize,

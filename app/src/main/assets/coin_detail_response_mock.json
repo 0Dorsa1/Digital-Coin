@@ -1,0 +1,39 @@
+{
+  "data": {
+    "date": 1694594846762,
+    "symbol": "BTC",
+    "priceDif2Day": "25,145.01",
+    "priceDif1Day": "25,838.06",
+    "priceDif3Day": "25,830.96",
+    "priceDif4Day": "25,900.36",
+    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+    "type": 1,
+    "priceDif7Day": "25,751.35",
+    "price": "25,948.02",
+    "priceDif6Day": "26,173.47",
+    "priceDif5Day": "25,903.57",
+    "lastUpdate": "",
+    "name": "Bitcoin",
+    "links": [
+      {
+        "image": "marex.app/marex/files/00/3/1643362002468HJWFQWQYELJP.png",
+        "name": "CoinMarketCap",
+        "link": "https://coinmarketcap.com/currencies/bitcoin/"
+      },
+      {
+        "image": "marex.app/marex/files/00/3/1643347727187YJZNNGTCJKZB.png",
+        "name": "TradingView",
+        "link": "https://www.tradingview.com/chart/?symbol=BTCUSD"
+      },
+      {
+        "image": "marex.app/marex/files/00/3/1643353811302IYHCPEQTJHXC.png",
+        "name": "CoinDesk",
+        "link": "https://www.coindesk.com/search?s=BTC"
+      }
+    ],
+    "id": "61f3e31f23f1f2048a87d945",
+    "order": 1,
+    "lastPrice": 25948.02
+  },
+  "status": true
+}
