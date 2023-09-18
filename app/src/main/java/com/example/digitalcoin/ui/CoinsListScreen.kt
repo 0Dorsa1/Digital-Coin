@@ -130,8 +130,7 @@ private fun ContentSection(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState()),
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier.background(color = Color.Black)) {
@@ -153,7 +152,7 @@ private fun ContentSection(
 
                 coinListState.exception?.let { Log.d("ERROR!!!!!!", it) }
             } else {
-                Column {
+                Column(modifier=Modifier.verticalScroll(rememberScrollState())){
                     coinListState.response?.data?.forEach { item ->
                         CoinItem(
                             modifier = Modifier
@@ -206,7 +205,7 @@ fun CoinItem(
             Text(text = "$${coin.price}", color = Color.Black, fontSize = 16.sp)
             // Display the percent change
             when {
-                coin.percentChange() > 0.toString() -> {
+                coin.percentChange().toDouble() > 0.0 -> {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = com.google.android.material.R.drawable.material_ic_menu_arrow_up_black_24dp),
@@ -217,7 +216,7 @@ fun CoinItem(
                         Text(text = "${coin.percentChange()}%")
                     }
                 }
-                coin.percentChange() < 0.toString() -> {
+                coin.percentChange().toDouble() < 0.0 -> {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = com.google.android.material.R.drawable.material_ic_menu_arrow_down_black_24dp),
