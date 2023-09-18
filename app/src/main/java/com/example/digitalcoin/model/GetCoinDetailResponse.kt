@@ -29,7 +29,32 @@ data class DetailedCoin(
     val id: String,
     val order: Int,
     val lastPrice: Double
-) : Parcelable
+) : Parcelable{
+    fun percentDifference1Day(): Double {
+        val priceDif1DayDouble = priceDif1Day.toDoubleOrNull()
+        if (priceDif1DayDouble != null && priceDif1DayDouble != 0.0) {
+            return ((lastPrice - priceDif1DayDouble) / priceDif1DayDouble) * 100
+        }
+        return 0.0
+    }
+
+    fun percentDifference2Days(): Double {
+        val priceDif2DayDouble = priceDif2Day.toDoubleOrNull()
+        if (priceDif2DayDouble != null && priceDif2DayDouble != 0.0) {
+            return ((lastPrice - priceDif2DayDouble) / priceDif2DayDouble) * 100
+        }
+        return 0.0
+    }
+
+    fun percentDifference3Days(): Double {
+        val priceDif3DayDouble = priceDif3Day.toDoubleOrNull()
+        if (priceDif3DayDouble != null && priceDif3DayDouble != 0.0) {
+            return ((lastPrice - priceDif3DayDouble) / priceDif3DayDouble) * 100
+        }
+        return 0.0
+    }
+
+}
 
 @Parcelize
 data class Link(

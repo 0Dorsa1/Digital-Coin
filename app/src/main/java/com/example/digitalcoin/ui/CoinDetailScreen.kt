@@ -2,10 +2,13 @@ package com.example.digitalcoin.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -86,41 +89,93 @@ private fun ContentSection(
             Box(modifier = Modifier.background(color = Color.Black)) {
                 ToolBar(title = "Coin", modifier = Modifier.align(Alignment.TopCenter))
             }
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             coinDetailState.response?.let { response ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.Gray)
+                        .padding(16.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest.Builder(LocalContext.current).data(data = response.data.icon)
+                                    .apply(block = fun ImageRequest.Builder.() {
+                                        crossfade(true)
+                                    }).build()
+                            ),
+                            contentDescription = "Icon",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
 
-                val painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(LocalContext.current).data(data = response.data.icon)
-                        .apply(block = fun ImageRequest.Builder.() {
-                            crossfade(true)
-                        }).build()
-                )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                Image(
-                    painter = painter,
-                    contentDescription = "Icon",
-                    modifier = Modifier.size(100.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            coinDetailState.response?.let { response ->
-                Text(text = response.data.symbol, style = MaterialTheme.typography.h6)
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            coinDetailState.response?.let { response ->
-                Text(text = response.data.name, style = MaterialTheme.typography.h6)
-            }
-            Spacer(modifier = Modifier.height(70.dp))
-            Text(text = "Yesterday Price:", style = MaterialTheme.typography.h6)
-            Spacer(modifier = Modifier.height(20.dp))
-            coinDetailState.response?.let { response ->
-                Text(text = response.data.priceDif1Day, style = MaterialTheme.typography.h4)
-            }
-            Spacer(modifier = Modifier.height(50.dp))
-            Text(text = "Last Price:", style = MaterialTheme.typography.h6)
-            Spacer(modifier = Modifier.height(10.dp))
-            coinDetailState.response?.let { response ->
-                Text(text = response.data.lastPrice.toString(), style = MaterialTheme.typography.h4)
+                        Text(
+                            text = response.data.symbol,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = response.data.name,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = response.data.price,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column {
+                                Text(text = "1 Day", style = MaterialTheme.typography.h6)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(text = "2 Days", style = MaterialTheme.typography.h6)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(text = "3 Days", style = MaterialTheme.typography.h6)
+                            }
+
+                            Column {
+                                Text(
+                                    text = response.data.percentDifference1Day().toString(),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.align(Alignment.End)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = response.data.percentDifference2Days().toString(),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.align(Alignment.End)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = response.data.percentDifference3Days().toString(),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.align(Alignment.End)
+                                )
+                            }
+
+                        }
+                    }
+                }
             }
         }
     }

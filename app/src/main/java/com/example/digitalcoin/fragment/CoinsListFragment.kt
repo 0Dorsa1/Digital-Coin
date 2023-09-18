@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.digitalcoin.R
 import com.example.digitalcoin.databinding.FragmentEmptyComposeBinding
+import com.example.digitalcoin.theme.MyAppTheme
 import com.example.digitalcoin.ui.CoinsListScreen
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,8 +24,11 @@ class CoinsListFragment : Fragment() {
         val binding: FragmentEmptyComposeBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_empty_compose, container, false)
         binding.composeContainer.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
             setContent {
-                CoinsListScreen()
+                MyAppTheme {
+                    CoinsListScreen()
+                }
             }
         }
 

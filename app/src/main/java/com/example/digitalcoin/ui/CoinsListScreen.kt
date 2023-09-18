@@ -1,7 +1,9 @@
 package com.example.digitalcoin.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,12 +36,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.Navigation
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.digitalcoin.R
 import com.example.digitalcoin.fragment.CoinsListFragmentDirections
 import com.example.digitalcoin.model.DigitalCoin
 import com.example.digitalcoin.model.GetCoinListResponse
+import com.example.digitalcoin.theme.MyAppTheme
 import com.example.digitalcoin.ui.viewmodel.CoinsListViewModel
 import com.example.digitalcoin.utils.getActivity
 import com.example.digitalcoin.utils.readAssetsFile
@@ -94,23 +99,25 @@ fun CoinsListScreen(
         }
     }
 
-    ContentSection(
-        coinListState = coinListViewModel.state,
-        coinListOnRetry = {
-            coinListViewModel.call(
-                pageSize = 10,
-                pageIndex = 0,
-                type = 1
-            )
-        },
-        onItemClicked = { id ->
-            Navigation.findNavController(activity as AppCompatActivity, R.id.nav_host_fragment).navigate(
-                CoinsListFragmentDirections.actionCoinsListFragmentToCoinDetailFragment(
-                    id = id
+    MyAppTheme {
+        ContentSection(
+            coinListState = coinListViewModel.state,
+            coinListOnRetry = {
+                coinListViewModel.call(
+                    pageSize = 10,
+                    pageIndex = 0,
+                    type = 1
                 )
-            )
-        }
-    )
+            },
+            onItemClicked = { id ->
+                Navigation.findNavController(activity as AppCompatActivity, R.id.nav_host_fragment).navigate(
+                    CoinsListFragmentDirections.actionCoinsListFragmentToCoinDetailFragment(
+                        id = id
+                    )
+                )
+            }
+        )
+    }
 }
 
 @Composable
@@ -168,6 +175,7 @@ private fun ContentSection(
 }
 
 
+@SuppressLint("PrivateResource")
 @Composable
 fun CoinItem(
     modifier: Modifier = Modifier,
@@ -175,19 +183,55 @@ fun CoinItem(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = coin.symbol, color = Color.White)
-
-        Spacer(modifier = Modifier.width(270.dp))
-
-        Icon(
-            modifier = Modifier
-                .size(30.dp),
-            painter = painterResource(id = androidx.appcompat.R.drawable.abc_ic_arrow_drop_right_black_24dp),
-            contentDescription = "arrow",
-            tint = Color.White
+        Image(
+            painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(coin.icon)
+                    .build()
+            ),
+            contentDescription = null,
+            modifier = Modifier.size(50.dp)
         )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(text = coin.symbol, color = Color.Black, fontSize = 16.sp)
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column {
+            Text(text = "$${coin.price}", color = Color.Black, fontSize = 16.sp)
+            // Display the percent change
+            when {
+                coin.percentChange() > 0.toString() -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = com.google.android.material.R.drawable.material_ic_menu_arrow_up_black_24dp),
+                            contentDescription = "Up Arrow",
+                            tint = Color.Green,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(text = "${coin.percentChange()}%")
+                    }
+                }
+                coin.percentChange() < 0.toString() -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = com.google.android.material.R.drawable.material_ic_menu_arrow_down_black_24dp),
+                            contentDescription = "Down Arrow",
+                            tint = Color.Red,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(text = "${coin.percentChange()}%")
+                    }
+                }
+                else -> {
+                    Text(text = "0.00%", color = Color.Gray)
+                }
+            }
+        }
     }
 }
