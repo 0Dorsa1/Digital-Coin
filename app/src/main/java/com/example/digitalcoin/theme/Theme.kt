@@ -10,21 +10,15 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 
 private val darkColorPalette = darkColors(
-    background = DarkBlue000,
-    onBackground = White000,
     primary = Green000,
-    secondary = Red000,
-    onSecondary = White000,
-    surface = Gray000
+    primaryVariant = Black001,
+    background = DarkBlue000,
 )
 
 private val lightColorPalette = lightColors(
-    background = White000,
-    onBackground = DarkBlue000,
     primary = Green000,
-    secondary = Red000,
-    onSecondary = DarkBlue000,
-    surface = Gray000
+    primaryVariant = Black001,
+    background = DarkBlue000,
 )
 
 @Composable

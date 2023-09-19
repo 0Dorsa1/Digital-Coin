@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,7 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.digitalcoin.model.GetCoinDetailResponse
+import com.example.digitalcoin.theme.cardBackground
+import com.example.digitalcoin.theme.primaryBackground
+import com.example.digitalcoin.theme.primaryText
+import com.example.digitalcoin.theme.secondaryText
 import com.example.digitalcoin.ui.viewmodel.CoinsDetailViewModel
 import com.example.digitalcoin.utils.readAssetsFile
 import com.google.gson.Gson
@@ -61,8 +66,8 @@ fun CoinDetailScreen(
 ) {
     var onCreate by rememberSaveable { mutableStateOf(true) }
 
-    LaunchedEffect(key1 = onCreate){
-        if (onCreate){
+    LaunchedEffect(key1 = onCreate) {
+        if (onCreate) {
             coinsDetailViewModel.call(id = id)
             onCreate = false
         }
@@ -74,106 +79,121 @@ fun CoinDetailScreen(
 @Composable
 private fun ContentSection(
     coinDetailState: CoinsDetailViewModel.ScreenState
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .background(MaterialTheme.colors.primaryBackground),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (coinDetailState.isLoading){
+        ToolBar(
+            modifier = Modifier.fillMaxWidth(),
+            title = "Coins"
+        )
+
+        if (coinDetailState.isLoading) {
             Box(modifier = Modifier.weight(1F)) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         } else {
-            Box(modifier = Modifier.background(color = Color.Black)) {
-                ToolBar(title = "Coin", modifier = Modifier.align(Alignment.TopCenter))
-            }
-            Spacer(modifier = Modifier.height(16.dp))
             coinDetailState.response?.let { response ->
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.Gray)
                         .padding(16.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(color = MaterialTheme.colors.cardBackground)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Column(
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(data = response.data.icon)
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    crossfade(true)
+                                }).build()
+                        ),
+                        contentDescription = "Icon",
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                            .size(50.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        color = MaterialTheme.colors.primaryText,
+                        text = response.data.name,
+                        style = MaterialTheme.typography.h6,
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp),
+                        color = MaterialTheme.colors.primaryText,
+                        text = response.data.symbol,
+                        style = MaterialTheme.typography.body1,
+                    )
+
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = "$" + response.data.price,
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.colors.secondaryText
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(
-                                ImageRequest.Builder(LocalContext.current).data(data = response.data.icon)
-                                    .apply(block = fun ImageRequest.Builder.() {
-                                        crossfade(true)
-                                    }).build()
-                            ),
-                            contentDescription = "Icon",
-                            modifier = Modifier
-                                .size(100.dp)
-                                .align(Alignment.CenterHorizontally)
-                        )
+                        Column {
+                            Text(
+                                color = MaterialTheme.colors.primaryText,
+                                text = "1 Day",
+                                style = MaterialTheme.typography.subtitle2
+                            )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                color = MaterialTheme.colors.primaryText,
+                                text = "2 Days",
+                                style = MaterialTheme.typography.subtitle2
+                            )
 
-                        Text(
-                            text = response.data.symbol,
-                            style = MaterialTheme.typography.h6,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Text(
-                            text = response.data.name,
-                            style = MaterialTheme.typography.h6,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Text(
-                            text = response.data.price,
-                            style = MaterialTheme.typography.h6,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column {
-                                Text(text = "1 Day", style = MaterialTheme.typography.h6)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(text = "2 Days", style = MaterialTheme.typography.h6)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(text = "3 Days", style = MaterialTheme.typography.h6)
-                            }
-
-                            Column {
-                                Text(
-                                    text = response.data.percentDifference1Day().toString(),
-                                    style = MaterialTheme.typography.h6,
-                                    modifier = Modifier.align(Alignment.End)
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = response.data.percentDifference2Days().toString(),
-                                    style = MaterialTheme.typography.h6,
-                                    modifier = Modifier.align(Alignment.End)
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = response.data.percentDifference3Days().toString(),
-                                    style = MaterialTheme.typography.h6,
-                                    modifier = Modifier.align(Alignment.End)
-                                )
-                            }
-
+                            Text(
+                                color = MaterialTheme.colors.primaryText,
+                                text = "3 Days",
+                                style = MaterialTheme.typography.subtitle2
+                            )
                         }
+
+                        Column {
+                            Text(
+                                color = MaterialTheme.colors.primaryText,
+                                text = response.data.percentDifference1Day().toString(),
+                                style = MaterialTheme.typography.subtitle2,
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                            Text(
+                                color = MaterialTheme.colors.primaryText,
+                                text = response.data.percentDifference2Days().toString(),
+                                style = MaterialTheme.typography.subtitle2,
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                            Text(
+                                color = MaterialTheme.colors.primaryText,
+                                text = response.data.percentDifference3Days().toString(),
+                                style = MaterialTheme.typography.subtitle2,
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                        }
+
                     }
                 }
             }

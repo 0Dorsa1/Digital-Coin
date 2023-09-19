@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,7 +21,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +49,15 @@ import com.example.digitalcoin.R
 import com.example.digitalcoin.fragment.CoinsListFragmentDirections
 import com.example.digitalcoin.model.DigitalCoin
 import com.example.digitalcoin.model.GetCoinListResponse
+import com.example.digitalcoin.theme.Green001
 import com.example.digitalcoin.theme.MyAppTheme
+import com.example.digitalcoin.theme.Red001
+import com.example.digitalcoin.theme.cardBackground
+import com.example.digitalcoin.theme.divider
+import com.example.digitalcoin.theme.hintText
+import com.example.digitalcoin.theme.primaryBackground
+import com.example.digitalcoin.theme.primaryText
+import com.example.digitalcoin.theme.secondaryText
 import com.example.digitalcoin.ui.viewmodel.CoinsListViewModel
 import com.example.digitalcoin.utils.getActivity
 import com.example.digitalcoin.utils.readAssetsFile
@@ -110,11 +122,12 @@ fun CoinsListScreen(
                 )
             },
             onItemClicked = { id ->
-                Navigation.findNavController(activity as AppCompatActivity, R.id.nav_host_fragment).navigate(
-                    CoinsListFragmentDirections.actionCoinsListFragmentToCoinDetailFragment(
-                        id = id
+                Navigation.findNavController(activity as AppCompatActivity, R.id.nav_host_fragment)
+                    .navigate(
+                        CoinsListFragmentDirections.actionCoinsListFragmentToCoinDetailFragment(
+                            id = id
+                        )
                     )
-                )
             }
         )
     }
@@ -126,20 +139,24 @@ private fun ContentSection(
     coinListOnRetry: () -> Unit,
     onItemClicked: (id: String) -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(MaterialTheme.colors.primaryBackground),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(modifier = Modifier.background(color = Color.Black)) {
-            ToolBar(title = "Coins", modifier = Modifier.align(Alignment.TopCenter))
-        }
+        ToolBar(
+            modifier = Modifier.fillMaxWidth(),
+            title = "Coins"
+        )
 
         Box(modifier = Modifier.weight(1F)) {
             if (coinListState.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.Center)
+                )
             } else if (coinListState.isError) {
                 Text(
                     modifier = Modifier
@@ -152,19 +169,22 @@ private fun ContentSection(
 
                 coinListState.exception?.let { Log.d("ERROR!!!!!!", it) }
             } else {
-                Column(modifier=Modifier.verticalScroll(rememberScrollState())){
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     coinListState.response?.data?.forEach { item ->
                         CoinItem(
                             modifier = Modifier
-                                .padding(10.dp)
-                                .clip(RoundedCornerShape(80.dp))
-                                .background(Color.Gray)
+                                .background(MaterialTheme.colors.cardBackground)
                                 .clickable {
                                     onItemClicked(item.id)
                                 }
                                 .padding(20.dp)
                                 .fillMaxWidth(),
                             coin = item
+                        )
+
+                        Divider(
+                            modifier = Modifier.height(1.dp),
+                            color = MaterialTheme.colors.divider
                         )
                     }
                 }
@@ -180,9 +200,10 @@ fun CoinItem(
     modifier: Modifier = Modifier,
     coin: DigitalCoin
 ) {
+    val percentage = coin.percentChange().toDouble()
+
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -192,43 +213,66 @@ fun CoinItem(
                     .build()
             ),
             contentDescription = null,
-            modifier = Modifier.size(50.dp)
+            modifier = Modifier.size(30.dp)
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            modifier = Modifier.padding(start = 16.dp),
+            text = coin.symbol,
+            color = MaterialTheme.colors.secondaryText,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
 
-        Text(text = coin.symbol, color = Color.Black, fontSize = 16.sp)
+        Spacer(modifier = Modifier.weight(1f))
 
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column {
-            Text(text = "$${coin.price}", color = Color.Black, fontSize = 16.sp)
+        Column (
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = "$${coin.price}",
+                color = MaterialTheme.colors.primaryText,
+                fontSize = 16.sp
+            )
             // Display the percent change
             when {
-                coin.percentChange().toDouble() > 0.0 -> {
+                percentage > 0.0 -> {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = com.google.android.material.R.drawable.material_ic_menu_arrow_up_black_24dp),
                             contentDescription = "Up Arrow",
-                            tint = Color.Green,
+                            tint = Green001,
                             modifier = Modifier.size(16.dp)
                         )
-                        Text(text = "${coin.percentChange()}%")
+
+                        Text(
+                            color = Green001,
+                            text = "${coin.percentChange()}%"
+                        )
                     }
                 }
-                coin.percentChange().toDouble() < 0.0 -> {
+
+                percentage < 0.0 -> {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = com.google.android.material.R.drawable.material_ic_menu_arrow_down_black_24dp),
                             contentDescription = "Down Arrow",
-                            tint = Color.Red,
+                            tint = Red001,
                             modifier = Modifier.size(16.dp)
                         )
-                        Text(text = "${coin.percentChange()}%")
+                        Text(
+                            color = Red001,
+                            text = "${coin.percentChange()}%"
+                        )
                     }
                 }
+
                 else -> {
-                    Text(text = "0.00%", color = Color.Gray)
+                    Text(
+                        text = "0.00%",
+                        color = MaterialTheme.colors.hintText
+                    )
                 }
             }
         }
