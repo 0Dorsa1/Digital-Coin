@@ -106,20 +106,23 @@ private fun ContentSection(
             .background(MaterialTheme.colors.primaryBackground),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        coinDetailState.response?.let { response ->
-            ToolBar(
-                modifier = Modifier.fillMaxWidth(),
-                title = "Coins"
-            )
+        ToolBar(
+            modifier = Modifier.fillMaxWidth(),
+            title = "Coins"
+        )
 
-            if (coinDetailState.isLoading) {
-                Box(modifier = Modifier.weight(1F)) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .align(Alignment.Center)
-                    )                }
-            } else {
+        if (coinDetailState.isLoading) {
+            Box(modifier = Modifier.weight(1F)) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.Center)
+                )
+            }
+        } else if (coinDetailState.isError) {
+            //TODO implement retry button and error message
+        } else {
+            coinDetailState.response?.let { response ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -129,9 +132,7 @@ private fun ContentSection(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
-                )
-
-                {
+                ) {
                     Image(
                         painter = rememberAsyncImagePainter(
                             ImageRequest.Builder(LocalContext.current)
@@ -160,14 +161,12 @@ private fun ContentSection(
                         style = MaterialTheme.typography.body1,
                     )
 
-
                     Text(
                         modifier = Modifier.padding(4.dp),
                         text = "$" + response.data.price,
                         style = MaterialTheme.typography.h6,
                         color = MaterialTheme.colors.secondaryText
                     )
-
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -199,11 +198,16 @@ private fun ContentSection(
                             val percent3Days = response.data.percentDifference3Days()
 
                             // Function to get the appropriate arrow icon
-                            fun getArrowIcon(percent: Double): Int {
-                                return when {
-                                    percent > 0 -> com.google.android.material.R.drawable.material_ic_menu_arrow_up_black_24dp
-                                    percent < 0 -> com.google.android.material.R.drawable.material_ic_menu_arrow_down_black_24dp
-                                    else -> 0 // No arrow for 0 percent change
+                            fun getArrowIcon(percent: String?): Int {
+                                return if (!percent.isNullOrEmpty()) {
+                                    val p = percent.toDouble()
+                                    when {
+                                        p > 0 -> com.google.android.material.R.drawable.material_ic_menu_arrow_up_black_24dp
+                                        p < 0 -> com.google.android.material.R.drawable.material_ic_menu_arrow_down_black_24dp
+                                        else -> 0 // No arrow for 0 percent change
+                                    }
+                                } else {
+                                    0
                                 }
                             }
 
@@ -218,12 +222,15 @@ private fun ContentSection(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    painter = painterResource(id = getArrowIcon(percent1Day.toDouble())),
-                                    contentDescription = "Arrow",
-                                    tint = getTextColor(percent1Day.toDouble()),
-                                    modifier = Modifier.size(16.dp)
-                                )
+                                val icon = getArrowIcon(percent1Day)
+                                if (icon != 0) {
+                                    Icon(
+                                        painter = painterResource(id = icon),
+                                        contentDescription = "Arrow",
+                                        tint = getTextColor(percent1Day.toDouble()),
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
                                 Text(
                                     color = getTextColor(percent1Day.toDouble()),
                                     text = formatPercent(percent1Day.toDouble()),
@@ -234,12 +241,15 @@ private fun ContentSection(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    painter = painterResource(id = getArrowIcon(percent2Days.toDouble())),
-                                    contentDescription = "Arrow",
-                                    tint = getTextColor(percent2Days.toDouble()),
-                                    modifier = Modifier.size(16.dp)
-                                )
+                                val icon = getArrowIcon(percent2Days)
+                                if (icon != 0) {
+                                    Icon(
+                                        painter = painterResource(id = icon),
+                                        contentDescription = "Arrow",
+                                        tint = getTextColor(percent2Days.toDouble()),
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
                                 Text(
                                     color = getTextColor(percent2Days.toDouble()),
                                     text = formatPercent(percent2Days.toDouble()),
@@ -250,12 +260,15 @@ private fun ContentSection(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    painter = painterResource(id = getArrowIcon(percent3Days.toDouble())),
-                                    contentDescription = "Arrow",
-                                    tint = getTextColor(percent3Days.toDouble()),
-                                    modifier = Modifier.size(16.dp)
-                                )
+                                val icon = getArrowIcon(percent3Days)
+                                if (icon != 0) {
+                                    Icon(
+                                        painter = painterResource(id = getArrowIcon(percent3Days)),
+                                        contentDescription = "Arrow",
+                                        tint = getTextColor(percent3Days.toDouble()),
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
                                 Text(
                                     color = getTextColor(percent3Days.toDouble()),
                                     text = formatPercent(percent3Days.toDouble()),
@@ -265,99 +278,99 @@ private fun ContentSection(
 
                         }
                     }
+
                     Text(
                         modifier = Modifier.padding(bottom = 6.dp),
                         text = convertTimestampToDateTime(response.data.date),
                         color = MaterialTheme.colors.secondaryText
                     )
+
                     Text(
                         text = getTimeSinceLastAPICall(response.data.date),
                         color = MaterialTheme.colors.secondaryText
                     )
                 }
-            }
 
-
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = "Check More On:",
-                style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
-            )
-
-
-            Row(modifier = Modifier.padding(top = 16.dp, bottom = 10.dp)) {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(LocalContext.current)
-                            .data(data = response.data.links[0].image)
-                            .apply(block = fun ImageRequest.Builder.() {
-                                crossfade(true)
-                            }).build()
-                    ),
-                    contentDescription = "Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
                 Text(
-                    modifier = Modifier
-                        .clickable {
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.data = Uri.parse(response.data.links[0].link)
-                            launcher.launch(intent)
-                        },
-                    text = response.data.links[0].name,
-                    fontSize = 20.sp
+                    modifier = Modifier.padding(top = 8.dp),
+                    text = "Check More On:",
+                    style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
                 )
-            }
 
-            Row(modifier = Modifier.padding(bottom = 10.dp)) {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(LocalContext.current)
-                            .data(data = response.data.links[1].image)
-                            .apply(block = fun ImageRequest.Builder.() {
-                                crossfade(true)
-                            }).build()
-                    ),
-                    contentDescription = "Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-                Text(
-                    modifier = Modifier
-                        .clickable {
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.data = Uri.parse(response.data.links[1].link)
-                            launcher.launch(intent)
-                        },
-                    text = response.data.links[1].name,
-                    fontSize = 20.sp
-                )
-            }
+                Row(modifier = Modifier.padding(top = 16.dp, bottom = 10.dp)) {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(data = "https://" + response.data.links[0].image)
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    crossfade(true)
+                                }).build()
+                        ),
+                        contentDescription = "Icon",
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(response.data.links[0].link)
+                                launcher.launch(intent)
+                            },
+                        text = response.data.links[0].name,
+                        fontSize = 20.sp
+                    )
+                }
 
-            Row(modifier = Modifier.padding(bottom = 10.dp)) {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(LocalContext.current)
-                            .data(data = response.data.links[2].image)
-                            .apply(block = fun ImageRequest.Builder.() {
-                                crossfade(true)
-                            }).build()
-                    ),
-                    contentDescription = "Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-                Text(
-                    modifier = Modifier
-                        .clickable {
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.data = Uri.parse(response.data.links[2].link)
-                            launcher.launch(intent)
-                        },
-                    text = response.data.links[2].name,
-                    fontSize = 20.sp
-                )
+                Row(modifier = Modifier.padding(bottom = 10.dp)) {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(data = response.data.links[1].image)
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    crossfade(true)
+                                }).build()
+                        ),
+                        contentDescription = "Icon",
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(response.data.links[1].link)
+                                launcher.launch(intent)
+                            },
+                        text = response.data.links[1].name,
+                        fontSize = 20.sp
+                    )
+                }
+
+                Row(modifier = Modifier.padding(bottom = 10.dp)) {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(LocalContext.current)
+                                .data(data = response.data.links[2].image)
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    crossfade(true)
+                                }).build()
+                        ),
+                        contentDescription = "Icon",
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(response.data.links[2].link)
+                                launcher.launch(intent)
+                            },
+                        text = response.data.links[2].name,
+                        fontSize = 20.sp
+                    )
+                }
             }
         }
     }
