@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -297,80 +298,39 @@ private fun ContentSection(
                     style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
                 )
 
-                Row(modifier = Modifier.padding(top = 16.dp, bottom = 10.dp)) {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(data = "https://" + response.data.links[0].image)
-                                .apply(block = fun ImageRequest.Builder.() {
-                                    crossfade(true)
-                                }).build()
-                        ),
-                        contentDescription = "Icon",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW)
-                                intent.data = Uri.parse(response.data.links[0].link)
-                                launcher.launch(intent)
-                            },
-                        text = response.data.links[0].name,
-                        fontSize = 20.sp
-                    )
+                LazyColumn(
+                    modifier = Modifier.padding(bottom = 10.dp)
+                ) {
+                    response.data.links.forEach { link ->
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .padding(top = if (response.data.links.indexOf(link) == 0) 16.dp else 0.dp)
+                            ) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(
+                                        ImageRequest.Builder(LocalContext.current)
+                                            .data(data ="https://"+ link.image)
+                                            .apply { crossfade(true) }
+                                            .build()
+                                    ),
+                                    contentDescription = "Icon",
+                                    modifier = Modifier.size(30.dp)
+                                )
+                                Text(
+                                    modifier = Modifier.clickable {
+                                        val intent = Intent(Intent.ACTION_VIEW)
+                                        intent.data = Uri.parse(link.link)
+                                        launcher.launch(intent)
+                                    },
+                                    text = link.name,
+                                    fontSize = 20.sp
+                                )
+                            }
+                        }
+                    }
                 }
 
-                Row(modifier = Modifier.padding(bottom = 10.dp)) {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(data = response.data.links[1].image)
-                                .apply(block = fun ImageRequest.Builder.() {
-                                    crossfade(true)
-                                }).build()
-                        ),
-                        contentDescription = "Icon",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW)
-                                intent.data = Uri.parse(response.data.links[1].link)
-                                launcher.launch(intent)
-                            },
-                        text = response.data.links[1].name,
-                        fontSize = 20.sp
-                    )
-                }
-
-                Row(modifier = Modifier.padding(bottom = 10.dp)) {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            ImageRequest.Builder(LocalContext.current)
-                                .data(data = response.data.links[2].image)
-                                .apply(block = fun ImageRequest.Builder.() {
-                                    crossfade(true)
-                                }).build()
-                        ),
-                        contentDescription = "Icon",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW)
-                                intent.data = Uri.parse(response.data.links[2].link)
-                                launcher.launch(intent)
-                            },
-                        text = response.data.links[2].name,
-                        fontSize = 20.sp
-                    )
-                }
             }
         }
     }
